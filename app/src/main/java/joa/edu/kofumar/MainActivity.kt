@@ -14,6 +14,7 @@ import java.time.temporal.ChronoUnit
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var calculo: Button
     lateinit var textViewInicio: TextView
     lateinit var textViewGasto: TextView
+    lateinit var textViewTiempo: TextView
 
     val ahora = Date()
 
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         calculo = findViewById(R.id.btnCalcular)
         textViewInicio = findViewById(R.id.txtvMomentoInicio)
         textViewGasto = findViewById(R.id.txtvGasto)
+        textViewTiempo = findViewById(R.id.txtvTiempo)
 
         val sharedPreferences: SharedPreferences = this.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
 
@@ -81,7 +84,27 @@ class MainActivity : AppCompatActivity() {
 
         val gastoFinal = gastoMs*diferencia
 
+        //obtener tiempo transcurrido
+        var days: Long = TimeUnit.MILLISECONDS.toDays(diferencia)
+        diferencia -= TimeUnit.DAYS.toMillis(days)
+        var hours: Long = TimeUnit.MILLISECONDS.toHours(diferencia)
+        diferencia -= TimeUnit.HOURS.toMillis(hours)
+        var minutes: Long = TimeUnit.MILLISECONDS.toMinutes(diferencia)
+        diferencia -= TimeUnit.MINUTES.toMillis(minutes)
+        var seconds: Long = TimeUnit.MILLISECONDS.toSeconds(diferencia)
 
+        var sb: StringBuilder = StringBuilder(64)
+        sb.append(days)
+        sb.append(" Días ")
+        sb.append(hours)
+        sb.append(" Horas ")
+        sb.append(minutes)
+        sb.append(" Minutos ")
+        sb.append(seconds)
+        sb.append(" Segundos ")
+
+        textViewTiempo.text = sb.toString()
+        /////
 
         val df = DecimalFormat("#.00")
         val gastoFinalFormateado: String = df.format(gastoFinal)
